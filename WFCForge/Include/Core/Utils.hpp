@@ -37,6 +37,8 @@ namespace WFCForge
 
 		void SleepFor(uint64_t duration);
 
+		uint32_t Hash(void* data, size_t size);
+
 	}
 
 }

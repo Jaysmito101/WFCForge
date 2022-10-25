@@ -48,7 +48,9 @@ namespace WFCForge
 			if(val)
 			{
 				appState.mode = Mode_TiledModel2D;
+				ImGui::PushID("Mode_TiledModel2D");
 				appState.tiledModel2D.ShowSettings();
+				ImGui::PopID();
 				ImGui::EndTabItem();
 			}
 
@@ -58,7 +60,9 @@ namespace WFCForge
 			if(val)
 			{
 				appState.mode = Mode_OverlappedModel2D;
+				ImGui::PushID("Mode_OverlappedModel2D");
 				appState.overlappedModel2D.ShowSettings();
+				ImGui::PopID();
 				ImGui::EndTabItem();
 			}
 

@@ -17,6 +17,7 @@
 #include <iostream>
 #include <fstream>
 #include <functional>
+#include <array>
 #include <cstdlib>
 #include <cstdint>
 
