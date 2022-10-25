@@ -17,6 +17,7 @@ include_directories(
     ./Vendor/Glad/Include
     ./Vendor/GLFW/Include
     ./Vendor/GLM
+    ./Vendor/Avir
     ./Vendor/JSON/single_include
     ./Vendor/ImGui
     ./Vendor/ImGui/backends

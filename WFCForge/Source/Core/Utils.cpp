@@ -18,7 +18,41 @@ namespace WFCForge
 	namespace Utils
 	{
 
+		std::string ShowFileOpenDialog()
+		{
+#ifdef WFC_WINDOWS
+			OPENFILENAME ofn;
+			CHAR fileName[MAX_PATH];
+			ZeroMemory(fileName, MAX_PATH);
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(OPENFILENAME);
+			ofn.hwndOwner = NULL;
+			//ofn.lpstrFilter = s2ws(ext).c_str();
+			ofn.lpstrFilter = "*.*\0";
+			ofn.lpstrFile = fileName;
+			ofn.nMaxFile = MAX_PATH;
+			ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+			ofn.lpstrDefExt =  "";
+			std::string fileNameStr;
 
+			if (GetOpenFileName(&ofn))
+			{
+				//std::wstring ws(ofn.lpstrFile);
+				//std::string str(ws.begin(), ws.end());
+				std::string str(ofn.lpstrFile);
+				return str;
+			}
+
+			return std::string("");
+#else
+			char filename[PATH_MAX];
+			FILE* f = popen("zenity --file-selection", "r");
+			fgets(filename, PATH_MAX, f);
+			pclose(f);
+			filename[strcspn(filename, "\n")] = 0;
+			return std::string(filename);
+#endif
+		}
 
 		std::string GetExecutablePath()
 		{
@@ -109,7 +143,19 @@ namespace WFCForge
 #endif
 		}
 
-		uint32_t Hash(const void* dat, size_t len)
+
+#if (defined(__GNUC__) && defined(__i386__)) || defined(__WATCOMC__) \
+  || defined(_MSC_VER) || defined (__BORLANDC__) || defined (__TURBOC__)
+#define get16bits(d) (*((const uint16_t *) (d)))
+#endif
+
+#if !defined (get16bits)
+#define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8)\
+                       +(uint32_t)(((const uint8_t *)(d))[0]) )
+#endif
+
+		// From : http://www.azillionmonkeys.com/qed/hash.html
+		uint32_t Hash(void* dat, size_t len)
 		{
     		const uint8_t* data = (const uint8_t*)dat;
     		uint32_t hash = (uint32_t)len;
@@ -123,8 +169,8 @@ namespace WFCForge
 
     		/* Main loop */
     		for (;len > 0; len--) {
-        		hash  += CGL_get16bits (data);
-        		tmp    = (CGL_get16bits (data+2) << 11) ^ hash;
+        		hash  += get16bits (data);
+        		tmp    = (get16bits (data+2) << 11) ^ hash;
         		hash   = (hash << 16) ^ tmp;
         		data  += 2*sizeof (uint16_t);
         		hash  += hash >> 11;
@@ -132,12 +178,12 @@ namespace WFCForge
 
     		/* Handle end cases */
     		switch (rem) {
-        		case 3: hash += CGL_get16bits (data);
+        		case 3: hash += get16bits (data);
                 		hash ^= hash << 16;
                 		hash ^= ((signed char)data[sizeof (uint16_t)]) << 18;
                 		hash += hash >> 11;
                 		break;
-        		case 2: hash += CGL_get16bits (data);
+        		case 2: hash += get16bits (data);
                 		hash ^= hash << 11;
                 		hash += hash >> 17;
                 		break;
@@ -157,7 +203,16 @@ namespace WFCForge
     		return hash;
 		}
 
+		std::string ToHexString(const unsigned char* data, size_t size)
+		{
+			std::stringstream ss;
+			ss << std::hex;
 
+			for (size_t i = 0; i < size; i++)
+				ss << std::setw(2) << std::setfill('0') << (int)data[i];
+
+			return ss.str();
+		}
 	}
 
 }

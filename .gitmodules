@@ -13,3 +13,6 @@
 [submodule "Vendor/JSON"]
 	path = Vendor/JSON
 	url = https://github.com/nlohmann/json
+[submodule "Vendor/Avir"]
+	path = Vendor/Avir
+	url = https://github.com/avaneev/avir.git

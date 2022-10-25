@@ -1,30 +1,28 @@
 #pragma once
+#include "Generators/TiledModel2D/TiledModel2DTile.hpp"
 #include "Graphics/Texture2D.hpp"
 
 namespace WFCForge
 {
-    class TiledModel2DManager
+    class TiledModel2DTileset
     {
     public:
-        TiledModel2DManager() = default;
-        virtual ~TiledModel2DManager() = default;
+        TiledModel2DTileset();
+        virtual ~TiledModel2DTileset();
 
+        void Clone(TiledModel2DTileset* other);
 
-        void Setup();
-        void Destroy();
-        void Update();
+        void AddTile(TiledModel2DTile tile);
+        void UploadTilesToGPU();
 
-        void* GetViewportTexture();        
+        inline void Clear() { tiles.clear(); }
 
-        void ShowSettings();
-
+        inline TiledModel2DTile* Back() { return &tiles.back(); }
+        
     private:
-        void ApplyTileResolution();
-        void ApplyTilemapSize();
+        
 
-    private:
-        Texture2D viewportTexture;
-        int tileResolution[2] = {10, 10};
-        int tileMapSize[2] = {10, 10};
+    public:
+        std::vector<TiledModel2DTile> tiles;
     };
 }

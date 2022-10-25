@@ -1,5 +1,6 @@
 #pragma once
 #include "Graphics/Texture2D.hpp"
+#include "Generators/TiledModel2D/TiledModel2DTilemap.hpp"
 
 namespace WFCForge
 {
@@ -23,8 +24,18 @@ namespace WFCForge
         void ApplyTilemapSize();
 
     private:
+        TiledModel2DTilemap tilemap;
+        TiledModel2DTileset tileset;
         Texture2D viewportTexture;
         int tileResolution[2] = {10, 10};
         int tileMapSize[2] = {10, 10};
+        struct
+        {
+            Texture2D tex;
+            unsigned char* data = NULL;
+            int h = 0, w = 0;
+            bool addRotated = true;
+            bool isRGB = false;
+        } tileToAdd;
     };
 }

@@ -42,8 +42,8 @@ namespace WFCForge
 	{
 		this->isRunning = true;
 
-		static float prevTime = glfwGetTime();
-		static float currTime = glfwGetTime();
+		static float prevTime = (float)glfwGetTime();
+		static float currTime = (float)glfwGetTime();
 
 		WFC_LOG("Starting main application loop");
 		while (this->isRunning)
@@ -52,7 +52,7 @@ namespace WFCForge
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			
-			currTime = glfwGetTime();
+			currTime = (float)glfwGetTime();
 			float deltaTime = currTime - prevTime;
 			prevTime = currTime;
 

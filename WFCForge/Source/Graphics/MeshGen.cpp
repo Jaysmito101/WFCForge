@@ -46,12 +46,12 @@ namespace WFCForge
 		glm::vec3 e2(0.0f);
 		glm::vec3 no(0.0f);
 	
-		for (int i = 0 ; i < vertexCount ; i++)
+		for (auto i = 0 ; i < vertexCount ; i++)
 		{
 			vertices[i].normal = glm::vec4(0.0f);
 		}
 
-		for (int i = 0 ; i < indexCount ; i += 3)
+		for (auto i = 0 ; i < indexCount ; i += 3)
 		{
 			glm::vec4& tmp4a = vertices[indices[i]].position;
 			glm::vec4& tmp4b = vertices[indices[i+1]].position;

@@ -29,6 +29,8 @@ namespace WFCForge
 		std::string GetExecutablePath();
 		std::string GetExecutableDir();
 
+		std::string ShowFileOpenDialog();
+
 		std::string ReadFile(const std::string& path, bool* loaded = nullptr);
 
 		bool PathExists(const std::string& path);
@@ -38,6 +40,7 @@ namespace WFCForge
 		void SleepFor(uint64_t duration);
 
 		uint32_t Hash(void* data, size_t size);
+		std::string ToHexString(const unsigned char* data, size_t size);
 
 	}
 
