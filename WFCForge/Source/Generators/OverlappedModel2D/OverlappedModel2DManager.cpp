@@ -5,12 +5,22 @@ namespace WFCForge
 {
     void OverlappedModel2DManager::Setup()
     {
-
+        viewportTexture.CreateEmpty(100, 100);
     }
 
     void OverlappedModel2DManager::Destroy()
     {
+        viewportTexture.Destroy();
+    }
+
+    void OverlappedModel2DManager::Update()
+    {
         
+    }
+
+    void* OverlappedModel2DManager::GetViewportTexture()
+    {
+        return (void*)(intptr_t)viewportTexture.GetHandle();
     }
 
     void OverlappedModel2DManager::ShowSettings()

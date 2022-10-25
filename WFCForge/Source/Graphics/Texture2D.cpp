@@ -51,6 +51,33 @@ namespace WFCForge
 		isLoaded = true;
 	}
 
+	void Texture2D::CreateEmpty(const uint32_t width, const uint32_t height)
+	{
+		WFC_ASSERT(!this->isLoaded, "Texture already loaded");
+
+		this->width = width;
+		this->height = height;
+		glGenTextures(1, &this->handle);
+		glBindTexture(GL_TEXTURE_2D, this->handle);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		isLoaded = true;
+	}
+	
+	void Texture2D::UploadData(const uint32_t offsetX, const uint32_t offsetY, const uint32_t sizeX, const uint32_t sizeY, void* data)
+	{
+		glBindTexture(GL_TEXTURE_2D, this->handle);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->width, this->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, offsetX, offsetY, sizeX, sizeY, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	}
+
 	void Texture2D::Destroy()
 	{
 		WFC_ASSERT(this->isLoaded, "Texture not yet loaded");

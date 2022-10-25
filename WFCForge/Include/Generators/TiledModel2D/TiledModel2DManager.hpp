@@ -1,4 +1,5 @@
 #pragma once
+#include "Graphics/Texture2D.hpp"
 
 namespace WFCForge
 {
@@ -11,7 +12,13 @@ namespace WFCForge
 
         void Setup();
         void Destroy();
-        
+        void Update();
+
+        void* GetViewportTexture();        
+
         void ShowSettings();
+
+    private:
+        Texture2D viewportTexture;
     };
 }

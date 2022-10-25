@@ -16,6 +16,7 @@ namespace WFCForge
 
 		mainWindow.SetTitle("WFCForge - Jaysmito Mukherjee");
 
+		appState.mainViewport.SetAppState(&appState);
 		appState.tiledModel2D.Setup();
 		appState.overlappedModel2D.Setup();
 
@@ -26,7 +27,11 @@ namespace WFCForge
 	void MainApplication::OnUpdate(float deltaTime)
 	{
 		appState.deltaTime = deltaTime;
-
+		switch(appState.mode)
+		{
+			case Mode_OverlappedModel2D : appState.overlappedModel2D.Update(); break;
+			case Mode_TiledModel2D : appState.tiledModel2D.Update(); break;
+		}
 	}
 
 	void MainApplication::ShowSettingsFor2D()
@@ -36,13 +41,13 @@ namespace WFCForge
 		val = (ImGui::BeginTabBar("##textureStoreTabBar"));
 		ImGui::PopStyleVar();
 		if(val)
-		{
-			
+		{			
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 10.0f));
 			val = (ImGui::BeginTabItem("Tiled Model"));
 			ImGui::PopStyleVar();
 			if(val)
 			{
+				appState.mode = Mode_TiledModel2D;
 				appState.tiledModel2D.ShowSettings();
 				ImGui::EndTabItem();
 			}
@@ -52,6 +57,7 @@ namespace WFCForge
 			ImGui::PopStyleVar();
 			if(val)
 			{
+				appState.mode = Mode_OverlappedModel2D;
 				appState.overlappedModel2D.ShowSettings();
 				ImGui::EndTabItem();
 			}
@@ -62,6 +68,7 @@ namespace WFCForge
 
 	void MainApplication::ShowSettingsFor3D()
 	{
+		appState.mode = Mode_Unknown;
 		ImGui::Text("Yet to be implemented");
 	}
 

@@ -11,7 +11,14 @@ namespace WFCForge
 		ImGui::Begin("Viewport");
 		ImGui::BeginChild("MainViewport");
 		ImVec2 wsize = ImGui::GetWindowSize();
-		//ImGui::Image((ImTextureID)(intptr_t)0, wsize, ImVec2(0, 1), ImVec2(1, 0)); // TODO
+
+		void* textureID = NULL;
+		switch(appState->mode)
+		{
+			case Mode_OverlappedModel2D : textureID = appState->overlappedModel2D.GetViewportTexture(); break;
+			case Mode_TiledModel2D : textureID = appState->overlappedModel2D.GetViewportTexture(); break;
+		}
+		if(textureID) ImGui::Image((ImTextureID)textureID, wsize, ImVec2(0, 1), ImVec2(1, 0));
 
 		if (ImGui::IsItemHovered())
 		{

@@ -4,6 +4,14 @@
 
 namespace WFCForge
 {
+
+	enum Mode
+	{
+		Mode_TiledModel2D = 0,
+		Mode_OverlappedModel2D,
+		Mode_Unknown
+	};
+
 	class AppState
 	{
 	public:
@@ -34,6 +42,7 @@ namespace WFCForge
 
 		TiledModel2DManager tiledModel2D;
 		OverlappedModel2DManager overlappedModel2D;
+		Mode mode = Mode_TiledModel2D;
 
 		glm::vec3 temp = glm::vec3(0.0f);
 

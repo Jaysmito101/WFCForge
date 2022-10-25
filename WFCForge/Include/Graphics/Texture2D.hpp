@@ -12,6 +12,8 @@ namespace WFCForge
 
 		bool LoadFromFile(const std::string& path);
 		void LoadFromMemory(const uint32_t width, const uint32_t height, const unsigned char* data);
+		void CreateEmpty(const uint32_t width, const uint32_t height);
+		void UploadData(const uint32_t offsetX, const uint32_t offsetY, const uint32_t sizeX, const uint32_t sizeY, void* data);
 		void Destroy();
 
 		void Bind(uint32_t slot);
