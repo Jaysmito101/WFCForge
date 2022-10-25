@@ -10,3 +10,6 @@
 [submodule "Vendor/ImGui"]
 	path = Vendor/ImGui
 	url = https://github.com/ocornut/imgui
+[submodule "Vendor/JSON"]
+	path = Vendor/JSON
+	url = https://github.com/nlohmann/json

@@ -10,10 +10,10 @@ def InitSubmodules():
     os.system("git submodule update --init --recursive")
 
 def GenerateProject():
-    os.system("cmake -S ./ -B ./")
+    os.system("cmake -S ./ -B ./build")
 
 def BuildProject():
-    os.system("cmake --build ./")
+    os.system("cmake --build ./build")
 
 def PrintHelp():
     print("VoxoGen3D Helper Script\n")

@@ -13,10 +13,11 @@ set(CMAKE_C_STANDARD_REUIRED True)
 find_package( OpenGL REQUIRED )
 
 include_directories( 
-    ./VoxoGen3D/Include
+    ./WFCForge/Include
     ./Vendor/Glad/Include
     ./Vendor/GLFW/Include
     ./Vendor/GLM
+    ./Vendor/JSON/single_include
     ./Vendor/ImGui
     ./Vendor/ImGui/backends
     ./Vendor/STB
