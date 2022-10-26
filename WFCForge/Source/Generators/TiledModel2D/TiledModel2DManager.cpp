@@ -144,6 +144,7 @@ namespace WFCForge
 
 		if (tilemap.IsPrepared())
 		{
+			ImGui::Checkbox("Make Output Tilable", &tilemap.wrapOutput);
 			tileToCollapse[0] = std::clamp(tileToCollapse[0], 0, tileMapSize[0]);
 			tileToCollapse[1] = std::clamp(tileToCollapse[1], 0, tileMapSize[1]);
 			ImGui::DragInt("##TileToCollapseIndexX", &tileToCollapse[0], 0.1f, 0, tileMapSize[0]);

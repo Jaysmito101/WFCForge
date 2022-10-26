@@ -26,6 +26,7 @@ namespace WFCForge
         void ReduceEntropy(int x, int y, int currentHash, int targetSide);
 
     public:
+        bool wrapOutput = false;
         std::vector<std::vector<int>> tiles;
 
     private:
@@ -35,7 +36,6 @@ namespace WFCForge
         int tileSizeX = 0;
         int tileSizeY = 0;
         bool isPrepared = false;
-        bool wrapOutput = false;
         std::vector<unsigned char> blankTex;
         std::vector<int> items;
         TiledModel2DTileset tileset;
