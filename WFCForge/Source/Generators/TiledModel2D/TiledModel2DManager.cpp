@@ -22,7 +22,7 @@ namespace WFCForge
 
     void TiledModel2DManager::Update()
     {
-        
+
     }
 
     void TiledModel2DManager::ApplyTileResolution()
@@ -80,6 +80,7 @@ namespace WFCForge
             if (tileToAdd.data != nullptr) tileToAdd.tex.LoadFromMemory(tileToAdd.w, tileToAdd.h, tileToAdd.data);
             ImGui::OpenPopup("##AddNewTileTexture");
         }
+        if(ImGui::Button("Clear Tiles")) tileset.Clear();
 
         ImGui::Text("Tiles in Tileset");
         ImGui::BeginChild("Tilesets", ImVec2(0, 250));
@@ -119,7 +120,7 @@ namespace WFCForge
                 tilemap.BakeToTexture(&viewportTexture);
             }
         }
-       
+
         static int seed = 42;
         ImGui::DragInt("Seed", &seed);
 
@@ -145,7 +146,7 @@ namespace WFCForge
             }
 
             if (ImGui::Button("Clean")) tilemap.Clean();
-        
+
             if (appState->mouseButton.right && appState->mousePosition.x >= 0.0f && appState->mousePosition.y >= 0.0f)
             {
                 tileToCollapse[0] = std::clamp((int)(appState->mousePosition.x * (tileResolution[0] * tileMapSize[0] - 1)) / tileResolution[0], 0, tileMapSize[0] - 1);
@@ -168,17 +169,20 @@ namespace WFCForge
             {
                 ImGui::Image((ImTextureID)(intptr_t)tileToAdd.tex.GetHandle(), ImVec2(100, 100));
                 if(tileToAdd.isRGB) ImGui::Text("Texture will be conveted to RGBA forcefully on add");
-                ImGui::Checkbox("Add Rotated Versions", &tileToAdd.addRotated);
+                if(tileResolution[0] == tileResolution[1]) ImGui::Checkbox("Add Rotated Versions", &tileToAdd.addRotated);
                 if (ImGui::Button("Add"))
                 {
                     TiledModel2DTile tile(tileResolution[0], tileResolution[1]);
                     tile.SetData(tileToAdd.w, tileToAdd.h, tileToAdd.data, tileToAdd.isRGB);
                     tileset.AddTile(tile);
-                    if (tileToAdd.addRotated)
+                    if(tileResolution[0] == tileResolution[1])
                     {
-                        tile.Rotate(1); tileset.AddTile(tile);
-                        tile.Rotate(1); tileset.AddTile(tile);
-                        tile.Rotate(1); tileset.AddTile(tile);
+                        if (tileToAdd.addRotated)
+                        {
+                            tile.Rotate(1); tileset.AddTile(tile);
+                            tile.Rotate(1); tileset.AddTile(tile);
+                            tile.Rotate(1); tileset.AddTile(tile);
+                        }
                     }
                     free(tileToAdd.data); tileToAdd.data = nullptr;
                     tileset.UploadTilesToGPU();
@@ -189,35 +193,51 @@ namespace WFCForge
             ImGui::EndPopup();
         }
 
-	{
-        if (ImGui::BeginPopup("##TileToCollapsePopup"))
         {
-            auto tileIndex = tileToCollapse[1] * tileMapSize[0] + tileToCollapse[0];
-            auto size = tilemap.tiles[tileIndex].tiles.size();
-            if (size == 1) ImGui::Text("Tile already collapsed");
-            else
+            if (ImGui::BeginPopup("##TileToCollapsePopup"))
             {
-                if (size == 0) ImGui::Text("No tile available");
+                auto tileIndex = tileToCollapse[1] * tileMapSize[0] + tileToCollapse[0];
+                auto size = tilemap.tiles[tileIndex].tiles.size();
+                if (size == 1) ImGui::Text("Tile already collapsed");
                 else
                 {
-                    ImGui::Text("Collapse tile with : ");
-                    for (auto i = 0; i < size; i++)
+                    if (size == 0) ImGui::Text("No tile available");
+                    else
                     {
-                        if (ImGui::ImageButton(texIds[tilemap.tiles[tileIndex].tiles[i].GetTileHash()], ImVec2(50, 50)))
+                        ImGui::Text("Collapse tile with : ");
+                        for (auto i = 0; i < size; i++)
                         {
-                            tilemap.Collapse(tileToCollapse[0], tileToCollapse[1], i);
-                            tilemap.BakeToTexture(&viewportTexture);
-                            ImGui::CloseCurrentPopup();
-                            break;
+                            if (ImGui::ImageButton(texIds[tilemap.tiles[tileIndex].tiles[i].GetTileHash()], ImVec2(50, 50)))
+                            {
+                                tilemap.Collapse(tileToCollapse[0], tileToCollapse[1], i);
+                                tilemap.BakeToTexture(&viewportTexture);
+                                ImGui::CloseCurrentPopup();
+                                break;
+                            }
+                            if ((i + 1) % 3 != 0) ImGui::SameLine();
                         }
-                        if ((i + 1) % 3 != 0) ImGui::SameLine();
+                        ImGui::NewLine();
                     }
-                    ImGui::NewLine();
                 }
+                ImGui::Text("Force Set tile to");
+                size = tileset.tiles.size();
+                for (auto i = 0; i < size; i++)
+                {
+                    if (ImGui::ImageButton((ImTextureID)(intptr_t)tileset.tiles[i].GetGPUTexture().GetHandle(), ImVec2(50, 50)))
+                    {
+                        if(tilemap.tiles[tileToCollapse[1] * tileMapSize[0] + tileToCollapse[0]].tiles.size() > 0) 
+                            tilemap.tiles[tileToCollapse[1] * tileMapSize[0] + tileToCollapse[0]].tiles.clear();
+                        tilemap.tiles[tileToCollapse[1] * tileMapSize[0] + tileToCollapse[0]].tiles.push_back(tileset.tiles[i]);
+                        tilemap.BakeToTexture(&viewportTexture);
+                        ImGui::CloseCurrentPopup();
+                        break;
+                    }
+                    if ((i + 1) % 3 != 0) ImGui::SameLine();
+                }
+                ImGui::NewLine();
+                ImGui::EndPopup();
             }
-            ImGui::EndPopup();
-        }
-	}                
+        }                
     }
 
     void TiledModel2DManager::UpdateTextureIdMap()
