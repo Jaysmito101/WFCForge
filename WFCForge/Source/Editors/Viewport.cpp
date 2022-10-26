@@ -42,13 +42,16 @@ namespace WFCForge
 			this->mousePosition.first = (io.MousePos.x - offset.x) / wsize.x;
 			this->mousePosition.second = (io.MousePos.y - offset.y)/ wsize.y;
 		}
+		else
+		{
+			this->mousePosition.first = -1.0f;
+			this->mousePosition.second = -1.0f;
+		}
+		appState->mousePosition.x = this->mousePosition.first;
+		appState->mousePosition.y = this->mousePosition.second;
 
 		ImGui::EndChild();
 
-		if (ImGui::BeginPopupContextItem("##MainViewportContextMenu"))
-		{
-			ImGui::EndPopup();
-		}
 
 
 		ImGui::End();

@@ -37,6 +37,12 @@ namespace WFCForge
 			bool left = false;
 		} mouseButton;
 
+		struct
+		{
+			float x = -1.0f;
+			float y = -1.0f;
+		} mousePosition;
+
 		float deltaTime = 0.0f;
 		bool is3DMode = false;
 

@@ -1,14 +1,16 @@
 #include "Generators/TiledModel2D/TiledModel2DManager.hpp"
 #include "WFCForge.hpp"
+#include "Data/AppState.hpp"
 
 #include "stb_image.h"
 
 namespace WFCForge
 {
 
-    void TiledModel2DManager::Setup()
+    void TiledModel2DManager::Setup(AppState* appState)
     {
         viewportTexture.CreateEmpty(100, 100);
+        this->appState = appState;
     }
 
     void TiledModel2DManager::Destroy()
@@ -27,13 +29,11 @@ namespace WFCForge
     {
         if (tilemap.IsPrepared()) tilemap.Clean();
         tileset.Clear();
-        // TODO
     }
 
     void TiledModel2DManager::ApplyTilemapSize()
     {
         if (tilemap.IsPrepared()) tilemap.Clean();
-        
     }
 
     void* TiledModel2DManager::GetViewportTexture()
@@ -56,7 +56,7 @@ namespace WFCForge
         }
 
         static int tileMapSizeCopy[2] = {10, 10};
-        ImGui::InputInt2("Tilemap Size (Tile Count)", tileMapSize);
+        ImGui::InputInt2("Tilemap Size (Tile Count)", tileMapSizeCopy);
         if((tileMapSizeCopy[0] != tileMapSize[0]) || (tileMapSizeCopy[1] != tileMapSize[1]))
         {
             if(ImGui::Button("Apply Change"))
@@ -85,7 +85,6 @@ namespace WFCForge
         ImGui::BeginChild("Tilesets", ImVec2(0, 250));
         for (auto i = 0; i < tileset.tiles.size(); i++)
         {
-            //ImGui::Image((ImTextureID)(intptr_t)tileset.tiles[i].GetGPUTexture().GetHandle(), ImVec2((float)tileResolution[0], (float)tileResolution[1]));
             ImGui::Image((ImTextureID)(intptr_t)tileset.tiles[i].GetGPUTexture().GetHandle(), ImVec2(100, 100));
             static char buff[256];
             sprintf(buff, "##TilesetTilePreview %d", i);
@@ -120,8 +119,10 @@ namespace WFCForge
                 tilemap.BakeToTexture(&viewportTexture);
             }
         }
-        
-        static int tileToCollapse[2] = {0, 0};
+       
+        static int seed = 42;
+        ImGui::DragInt("Seed", &seed);
+
         if (tilemap.IsPrepared())
         {
             tileToCollapse[0] = std::clamp(tileToCollapse[0], 0, tileMapSize[0]);
@@ -130,9 +131,35 @@ namespace WFCForge
             ImGui::DragInt("##TileToCollapseIndexY", &tileToCollapse[1], 0.1f, 0, tileMapSize[1]);
             if (ImGui::Button("Collapse"))
                 ImGui::OpenPopup("##TileToCollapsePopup");
-            if (ImGui::Button("Clean"))
-                tilemap.Clean();
+
+            if (ImGui::Button("Auto Collapse Next"))
+            {
+                tilemap.CollapseNext(seed);
+                tilemap.BakeToTexture(&viewportTexture);
+            }
+
+            if (ImGui::Button("Auto Collapse All"))
+            {
+                tilemap.CollapseAll(seed);
+                tilemap.BakeToTexture(&viewportTexture);
+            }
+
+            if (ImGui::Button("Clean")) tilemap.Clean();
+        
+            if (appState->mouseButton.right && appState->mousePosition.x >= 0.0f && appState->mousePosition.y >= 0.0f)
+            {
+                tileToCollapse[0] = std::clamp((int)(appState->mousePosition.x * (tileResolution[0] * tileMapSize[0] - 1)) / tileResolution[0], 0, tileMapSize[0] - 1);
+                tileToCollapse[1] = std::clamp((int)(appState->mousePosition.y * (tileResolution[1] * tileMapSize[1] - 1)) / tileResolution[1], 0, tileMapSize[1] - 1);
+                ImGui::OpenPopup("##TileToCollapsePopup");
+            }
+
+            if (ImGui::Button("Export Image"))
+            {
+                auto exportPath = Utils::ShowSaveFileDialog();
+                if(exportPath.size() > 3) tilemap.ExportImage(exportPath);
+            }
         }
+
 
         if (ImGui::BeginPopup("##AddNewTileTexture"))
         {
@@ -155,12 +182,14 @@ namespace WFCForge
                     }
                     free(tileToAdd.data); tileToAdd.data = nullptr;
                     tileset.UploadTilesToGPU();
+                    UpdateTextureIdMap();
                     ImGui::CloseCurrentPopup();
                 }
             }
             ImGui::EndPopup();
         }
 
+	{
         if (ImGui::BeginPopup("##TileToCollapsePopup"))
         {
             auto tileIndex = tileToCollapse[1] * tileMapSize[0] + tileToCollapse[0];
@@ -168,23 +197,33 @@ namespace WFCForge
             if (size == 1) ImGui::Text("Tile already collapsed");
             else
             {
-                ImGui::Text("Collapse Tile With");
-                for (auto i = 0; i < size; i++)
+                if (size == 0) ImGui::Text("No tile available");
+                else
                 {
-                    if (ImGui::ImageButton((ImTextureID)(intptr_t)tilemap.tiles[tileIndex].tiles[i].GetGPUTexture().GetHandle(), ImVec2(100, 100)))
+                    ImGui::Text("Collapse tile with : ");
+                    for (auto i = 0; i < size; i++)
                     {
-                        tilemap.Collapse(tileToCollapse[0], tileToCollapse[1], i);
-                        tilemap.BakeToTexture(&viewportTexture);
-                        ImGui::CloseCurrentPopup();
-                        break;
+                        if (ImGui::ImageButton(texIds[tilemap.tiles[tileIndex].tiles[i].GetTileHash()], ImVec2(50, 50)))
+                        {
+                            tilemap.Collapse(tileToCollapse[0], tileToCollapse[1], i);
+                            tilemap.BakeToTexture(&viewportTexture);
+                            ImGui::CloseCurrentPopup();
+                            break;
+                        }
+                        if ((i + 1) % 3 != 0) ImGui::SameLine();
                     }
-                    if ((i + 1) % 3 != 0) ImGui::SameLine();
+                    ImGui::NewLine();
                 }
-                ImGui::NewLine();
             }
             ImGui::EndPopup();
         }
-                
+	}                
+    }
+
+    void TiledModel2DManager::UpdateTextureIdMap()
+    {
+        for (int i = 0; i < tileset.tiles.size(); i++) 
+            texIds[tileset.tiles[i].GetTileHash()] = (ImTextureID)(intptr_t)tileset.tiles[i].GetGPUTexture().GetHandle();
     }
 
 }

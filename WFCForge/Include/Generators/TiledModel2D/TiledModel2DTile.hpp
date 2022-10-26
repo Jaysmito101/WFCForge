@@ -30,10 +30,12 @@ namespace WFCForge
         void RotateOnce();
         void CalculateFaceIDs();
 
+    public:
+        std::vector<unsigned char> data;
+
     private:
         int height, width;
         Texture2D tex;
-        std::vector<unsigned char> data;
         std::array<std::vector<unsigned char>, 4> faceIDs; // top right bottom left
         std::array<std::string, 4> faceIDStrs; // top right bottom left
         std::array<int32_t, 4> faceIDHashes; // top right bottom left

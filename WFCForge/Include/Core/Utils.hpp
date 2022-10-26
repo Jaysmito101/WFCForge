@@ -29,6 +29,7 @@ namespace WFCForge
 		std::string GetExecutablePath();
 		std::string GetExecutableDir();
 
+		std::string ShowSaveFileDialog();
 		std::string ShowFileOpenDialog();
 
 		std::string ReadFile(const std::string& path, bool* loaded = nullptr);

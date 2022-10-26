@@ -134,6 +134,41 @@ namespace WFCForge
 			return false;
 		}
 
+		std::string ShowSaveFileDialog()
+		{
+#ifdef WFC_WINDOWS
+			OPENFILENAME ofn;
+			CHAR fileName[MAX_PATH];
+			ZeroMemory(fileName, MAX_PATH);
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(OPENFILENAME);
+			ofn.hwndOwner = NULL;
+			//ofn.lpstrFilter = s2ws(ext).c_str();
+			ofn.lpstrFilter = "*.png*\0";
+			ofn.lpstrFile = fileName;
+			ofn.nMaxFile = MAX_PATH;
+			ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+			ofn.lpstrDefExt = "";
+			std::string fileNameStr;
+
+			if (GetSaveFileName(&ofn))
+			{
+				std::string str(ofn.lpstrFile);
+				return str;
+			}
+
+			return std::string("");
+#else
+			char filename[PATH_MAX];
+			FILE* f = popen("zenity --file-selection --save", "r");
+			fgets(filename, PATH_MAX, f);
+			pclose(f);
+			filename[strcspn(filename, "\n")] = 0;
+			return std::string(filename);
+#endif
+		}
+
+
 		void SleepFor(uint64_t duration)
 		{
 #ifdef WFC_WINDOWS

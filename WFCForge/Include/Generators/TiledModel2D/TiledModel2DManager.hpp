@@ -1,17 +1,19 @@
 #pragma once
+#include "imgui.h"
 #include "Graphics/Texture2D.hpp"
 #include "Generators/TiledModel2D/TiledModel2DTilemap.hpp"
 
 namespace WFCForge
 {
+    class AppState;
+
     class TiledModel2DManager
     {
     public:
         TiledModel2DManager() = default;
         virtual ~TiledModel2DManager() = default;
 
-
-        void Setup();
+        void Setup(AppState* appState);
         void Destroy();
         void Update();
 
@@ -22,6 +24,7 @@ namespace WFCForge
     private:
         void ApplyTileResolution();
         void ApplyTilemapSize();
+        void UpdateTextureIdMap();
 
     private:
         TiledModel2DTilemap tilemap;
@@ -29,6 +32,9 @@ namespace WFCForge
         Texture2D viewportTexture;
         int tileResolution[2] = {10, 10};
         int tileMapSize[2] = {10, 10};
+        std::unordered_map<int, ImTextureID> texIds;
+        int tileToCollapse[2] = { 0, 0 };
+        AppState* appState = nullptr;
         struct
         {
             Texture2D tex;

@@ -12,20 +12,31 @@ namespace WFCForge
 
         void Clean();
         void BakeToTexture(Texture2D* tex);
-        void Prepare(int countX, int countY, int tileSizeX, int tileSizeY, TiledModel2DTileset* tileset);
+        void Prepare(int countX, int countY, int tileSizeX, int tileSizeY, TiledModel2DTileset* tileset, bool wrapOutput = false);
         void Collapse(int x, int y, int id);
+        void CollapseNext(int seed);
+        void CollapseAll(int seed);
+        void ExportImage(std::string path);
 
+        inline bool HasTotallyCollapsed() {return hasTotallyCollapsed;}
         inline bool IsPrepared() { return this->isPrepared; }
+
+    private:
+        void PropagateFor(int x, int y);
+        void ReduceEntropy(int x, int y, int currentHash, int targetSide);
 
     public:
         std::vector<TiledModel2DTileset> tiles;
 
     private:
+        bool hasTotallyCollapsed = false;
         int countX = 0;
         int countY = 0;
         int tileSizeX = 0;
         int tileSizeY = 0;
         bool isPrepared = false;
+        bool wrapOutput = false;
         std::vector<unsigned char> blankTex;
+        std::vector<int> items;
     };
 }

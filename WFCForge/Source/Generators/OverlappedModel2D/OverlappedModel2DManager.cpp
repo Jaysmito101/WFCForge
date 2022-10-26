@@ -25,7 +25,7 @@ namespace WFCForge
 
     void OverlappedModel2DManager::ShowSettings()
     {
-        ImGui::Text("void OverlappedModel2DManager::ShowSettings()");
+        ImGui::Text("To be implemented in V0.2");
     }
 
 }

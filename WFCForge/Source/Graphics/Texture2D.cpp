@@ -6,11 +6,18 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb_image_write.h>
+
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include <stb_image_resize.h>
+
 namespace WFCForge
 {
 
 	bool Texture2D::LoadFromFile(const std::string& path)
 	{
+
 		WFC_ASSERT(!this->isLoaded, "Texture already loaded");
 		
 		int h = 0;

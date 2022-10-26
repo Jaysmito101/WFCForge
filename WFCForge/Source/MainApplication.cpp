@@ -17,7 +17,7 @@ namespace WFCForge
 		mainWindow.SetTitle("WFCForge - Jaysmito Mukherjee");
 
 		appState.mainViewport.SetAppState(&appState);
-		appState.tiledModel2D.Setup();
+		appState.tiledModel2D.Setup(&appState);
 		appState.overlappedModel2D.Setup();
 
 		WFC_LOG("OnStart");
@@ -73,7 +73,7 @@ namespace WFCForge
 	void MainApplication::ShowSettingsFor3D()
 	{
 		appState.mode = Mode_Unknown;
-		ImGui::Text("Yet to be implemented");
+		ImGui::Text("To be implemented in V0.3");
 	}
 
 	void MainApplication::OnUIShow()

@@ -14,15 +14,17 @@ namespace WFCForge
     void TiledModel2DTileset::Clone(TiledModel2DTileset* other)
     {
         other->tiles = this->tiles;
-        other->UploadTilesToGPU();
     }
 
-    void TiledModel2DTileset::AddTile(TiledModel2DTile tile)
+    void TiledModel2DTileset::AddTile(TiledModel2DTile tile, bool checkDuplicates)
     {
-        for (auto i = 0; i < tiles.size(); i++)
+        if (checkDuplicates)
         {
-            if (tiles[i] == tile)  // Fixme: Possibility of hash collisions
-                return;
+            for (auto i = 0; i < tiles.size(); i++)
+            {
+                if (tiles[i] == tile)  // Fixme: Possibility of hash collisions
+                    return;
+            }
         }
         tiles.push_back(tile);
     }

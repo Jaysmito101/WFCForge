@@ -12,7 +12,7 @@ namespace WFCForge
 
         void Clone(TiledModel2DTileset* other);
 
-        void AddTile(TiledModel2DTile tile);
+        void AddTile(TiledModel2DTile tile, bool checkDuplicates = true);
         void UploadTilesToGPU();
         void Collapse(int index);
 
