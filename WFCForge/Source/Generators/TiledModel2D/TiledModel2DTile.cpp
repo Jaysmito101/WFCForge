@@ -12,6 +12,7 @@ namespace WFCForge
         this->faceIDHashes = other.faceIDHashes;
         this->faceIDs = faceIDs;
         this->tileHash = other.tileHash;
+        this->allowedTiles = other.allowedTiles;
     }
 
     TiledModel2DTile::TiledModel2DTile(int tileWidth, int tileHeight)
@@ -30,8 +31,13 @@ namespace WFCForge
     int TiledModel2DTile::SetData(int w, int h, unsigned char* d, bool isDataRGB)
     {
         if (isDataRGB) throw std::exception("RGB images not supported!");
-        avir::CImageResizer<> ImageResizer(8);
-        ImageResizer.resizeImage(d, w, h, 0, data.data(), width, height, 4, 0);
+        if (w == width && h == height)
+            memcpy(data.data(), d, w * h * 4);
+        else
+        {
+            avir::CImageResizer<> ImageResizer(8);
+            ImageResizer.resizeImage(d, w, h, 0, data.data(), width, height, 4, 0);
+        }
         CalculateFaceIDs();
         return 0;
     }
@@ -46,6 +52,12 @@ namespace WFCForge
     Texture2D& TiledModel2DTile::GetGPUTexture()
     {
         return this->tex;
+    }
+
+    bool TiledModel2DTile::IsTileAllowed(int newTileHash, int position)
+    {
+        position = std::clamp(position, 0, 4);
+        return std::find(allowedTiles[position].begin(), allowedTiles[position].end(), newTileHash) != allowedTiles[position].end();
     }
     
     void TiledModel2DTile::RotateOnce()

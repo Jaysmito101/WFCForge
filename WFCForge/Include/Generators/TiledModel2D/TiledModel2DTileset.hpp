@@ -10,20 +10,17 @@ namespace WFCForge
         TiledModel2DTileset();
         virtual ~TiledModel2DTileset();
 
-        void Clone(TiledModel2DTileset* other);
+        void AutoCalculateTileNeighbours();
 
-        void AddTile(TiledModel2DTile tile, bool checkDuplicates = true);
-        void UploadTilesToGPU();
-        void Collapse(int index);
+        void RemoveTile(int hash);
+        void AddTile(TiledModel2DTile tile);        
 
-        inline void Clear() { tiles.clear(); }
-
-        inline TiledModel2DTile* Back() { return &tiles.back(); }
+        inline void Clear() { tiles.clear(); hashes.clear(); }
         
-    private:
-        
+    private:        
 
     public:
-        std::vector<TiledModel2DTile> tiles;
+        std::vector<int> hashes;
+        std::unordered_map<int, TiledModel2DTile> tiles;
     };
 }

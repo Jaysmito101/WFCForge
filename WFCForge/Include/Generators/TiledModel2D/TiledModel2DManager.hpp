@@ -24,16 +24,18 @@ namespace WFCForge
     private:
         void ApplyTileResolution();
         void ApplyTilemapSize();
-        void UpdateTextureIdMap();
+        void ShowTileToCollapsePopup();
+        void ShowTileConfigureNeihbours();
 
     private:
         TiledModel2DTilemap tilemap;
         TiledModel2DTileset tileset;
         Texture2D viewportTexture;
+        Texture2D blank;
         int tileResolution[2] = {10, 10};
         int tileMapSize[2] = {10, 10};
-        std::unordered_map<int, ImTextureID> texIds;
         int tileToCollapse[2] = { 0, 0 };
+        int tileToConfigureNeighbours = 0;
         AppState* appState = nullptr;
         struct
         {

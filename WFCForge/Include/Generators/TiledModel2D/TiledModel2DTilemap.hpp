@@ -14,7 +14,7 @@ namespace WFCForge
         void BakeToTexture(Texture2D* tex);
         void Prepare(int countX, int countY, int tileSizeX, int tileSizeY, TiledModel2DTileset* tileset, bool wrapOutput = false);
         void Collapse(int x, int y, int id);
-        void CollapseNext(int seed);
+        void CollapseNext();
         void CollapseAll(int seed);
         void ExportImage(std::string path);
 
@@ -26,7 +26,7 @@ namespace WFCForge
         void ReduceEntropy(int x, int y, int currentHash, int targetSide);
 
     public:
-        std::vector<TiledModel2DTileset> tiles;
+        std::vector<std::vector<int>> tiles;
 
     private:
         bool hasTotallyCollapsed = false;
@@ -38,5 +38,6 @@ namespace WFCForge
         bool wrapOutput = false;
         std::vector<unsigned char> blankTex;
         std::vector<int> items;
+        TiledModel2DTileset tileset;
     };
 }
