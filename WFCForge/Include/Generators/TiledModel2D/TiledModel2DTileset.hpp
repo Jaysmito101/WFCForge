@@ -14,6 +14,7 @@ namespace WFCForge
 
         void AddTile(TiledModel2DTile tile);
         void UploadTilesToGPU();
+        void Collapse(int index);
 
         inline void Clear() { tiles.clear(); }
 

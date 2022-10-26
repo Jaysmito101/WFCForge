@@ -14,6 +14,7 @@ namespace WFCForge
     void TiledModel2DTileset::Clone(TiledModel2DTileset* other)
     {
         other->tiles = this->tiles;
+        other->UploadTilesToGPU();
     }
 
     void TiledModel2DTileset::AddTile(TiledModel2DTile tile)
@@ -33,5 +34,13 @@ namespace WFCForge
             if (!tiles[i].IsUploadedToGPU())
                 tiles[i].UploadToGPU();
         }
+    }
+
+    void TiledModel2DTileset::Collapse(int index)
+    {
+        // TODO: maybe do this in some better way
+        auto temp = tiles[index];
+        tiles.clear();
+        tiles.push_back(temp);
     }
 }

@@ -22,7 +22,10 @@ namespace WFCForge
         {
             for (int j = 0; j < countX; j++)
             {
-                tex->UploadData(j * tileSizeX, i * tileSizeY, tileSizeX, tileSizeY, tiles[i * countX + j].Back()->GetDataPTR());
+                if(tiles[i * countX + j].tiles.size() == 1)                
+                    tex->UploadData(j * tileSizeX, i * tileSizeY, tileSizeX, tileSizeY, tiles[i * countX + j].tiles.back().GetDataPTR());
+                else
+                    tex->UploadData(j * tileSizeX, i * tileSizeY, tileSizeX, tileSizeY, blankTex.data());
             }
         }
     }
@@ -38,6 +41,17 @@ namespace WFCForge
         this->tiles = std::vector<TiledModel2DTileset>(countX * countY);
         for (int i = 0; i < tiles.size(); i++) tileset->Clone(&tiles[i]);
 
+        if (tileSizeX * tileSizeY * 4 > blankTex.size())
+            while (tileSizeX * tileSizeY * 4 < blankTex.size())
+                blankTex.push_back(0);
+        
         this->isPrepared = true;
+    }
+    
+    void TiledModel2DTilemap::Collapse(int x, int y, int id)
+    {
+        // TODO
+        int index = y * countX + x;
+        tiles[index].Collapse(id);
     }
 }
