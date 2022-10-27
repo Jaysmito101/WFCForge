@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Core.hpp"
+
 namespace WFCForge
 {
 
@@ -9,8 +11,10 @@ namespace WFCForge
 		MazeGen2DAlgorithm() = default;
 		virtual ~MazeGen2DAlgorithm() = default;
 
+		std::vector<std::pair<int, int>> GetNeighbours(int x, int y, bool isWall);
 		void Setup(int width, int height, int seed);
 		void Destroy();
+
 
 		virtual void Step() = 0;
 		virtual void OnSetup();

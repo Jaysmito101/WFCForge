@@ -4,6 +4,7 @@
 
 #include "Generators/MazeGen2D/MazeGen2DDummy.hpp"
 #include "Generators/MazeGen2D/MazeGen2DBinaryTree.hpp"
+#include "Generators/MazeGen2D/MazeGen2DAldousBroder.hpp"
 
 #include <stb_image.h>
 #include <stb_image_write.h>
@@ -37,6 +38,7 @@ namespace WFCForge
 		memset(this->wallTileData, 255, 10 * 10 * 4);
 		memset(this->pathTileData, 0, 10 * 10 * 4);
 		this->algorithms.push_back(std::make_shared<MazeGen2DBinaryTree>());
+		this->algorithms.push_back(std::make_shared<MazeGen2DAldousBroder>());
 		this->algorithms.push_back(std::make_shared<MazeGen2DDummy>());
 	}
 
@@ -81,6 +83,7 @@ namespace WFCForge
 
 			static const char* algorithmNames[] = {
 				"Binary Tree",
+				"Aldous Broder",
 				"Dummy"
 			};
 

@@ -26,4 +26,24 @@ namespace WFCForge
 		srand(time(NULL)); // optional
 		this->OnDestroy();
 	}
+
+	std::vector<std::pair<int, int>> MazeGen2DAlgorithm::GetNeighbours(int x, int y, bool isWall)
+	{
+		std::vector<std::pair<int, int>> out;
+		int nx, ny;
+
+		nx = x + 2; ny = y;
+		if (nx < width) if (board[ny * width + nx] == isWall) out.push_back({nx, ny});
+
+		nx = x - 2; ny = y;
+		if (nx >= 0) if (board[ny * width + nx] == isWall) out.push_back({ nx, ny });
+
+		nx = x; ny = y + 2;
+		if (ny < height) if (board[ny * width + nx] == isWall) out.push_back({ nx, ny });
+
+		nx = x; ny = y - 2;
+		if (ny >= 0) if (board[ny * width + nx] == isWall) out.push_back({ nx, ny });
+
+		return out;
+	}
 }
