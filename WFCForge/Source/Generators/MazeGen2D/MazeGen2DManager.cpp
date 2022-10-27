@@ -3,9 +3,31 @@
 #include "Data/AppState.hpp"
 
 #include "Generators/MazeGen2D/MazeGen2DDummy.hpp"
+#include "Generators/MazeGen2D/MazeGen2DBinaryTree.hpp"
+
+#include <stb_image.h>
+#include <stb_image_write.h>
+#include <avir.h>
 
 namespace WFCForge
 {
+	static void ChangeTileFor(unsigned char* data, int width, int height)
+	{
+		std::string path = Utils::ShowFileOpenDialog();
+		if (path.size() <= 3) return;
+		int w = 0, h = 0, ch = 4;
+		stbi_set_flip_vertically_on_load(false);
+		auto d = stbi_load(path.data(), &w, &h, &ch, 4);
+		if (d == nullptr) return;
+		if (w == width && h == height) memcpy(data, d, w * h * 4);
+		else
+		{
+			avir::CImageResizer<> ImageResizer(8);
+			ImageResizer.resizeImage(d, w, h, 0, data, width, height, 4, 0);
+		}
+		stbi_image_free(d);
+	}
+
 	void MazeGen2DManager::Setup(AppState* appState)
 	{
 		this->appState = appState;
@@ -14,6 +36,7 @@ namespace WFCForge
 		this->pathTileData = new unsigned char[10 * 10 * 4];
 		memset(this->wallTileData, 255, 10 * 10 * 4);
 		memset(this->pathTileData, 0, 10 * 10 * 4);
+		this->algorithms.push_back(std::make_shared<MazeGen2DBinaryTree>());
 		this->algorithms.push_back(std::make_shared<MazeGen2DDummy>());
 	}
 
@@ -53,7 +76,11 @@ namespace WFCForge
 
 			ImGui::DragInt2("Tile Map Size", tileMapSize, 0.1f, 1);
 
+			if (ImGui::Button("Change Wall Tile")) ChangeTileFor(wallTileData, tileSize[0], tileSize[1]);
+			if (ImGui::Button("Change Path Tile")) ChangeTileFor(pathTileData, tileSize[0], tileSize[1]);
+
 			static const char* algorithmNames[] = {
+				"Binary Tree",
 				"Dummy"
 			};
 
@@ -106,7 +133,13 @@ namespace WFCForge
 			
 			if (visualiseGeneration) ImGui::DragFloat("Visualizer Delay (in ms)", &visualiseDelay, 1.0f, 10.0f);
 
-			if(!generateAllOn) if (ImGui::Button("Clean")) algorithms[selectedAlgorithm]->Destroy();
+			if (!generateAllOn)
+			{
+				if (ImGui::Button("Clean")) algorithms[selectedAlgorithm]->Destroy();
+				if (ImGui::Button("Export Image")) ExportImage();
+				if (ImGui::Button("Export Path Mask")) ExportMask(false);
+				if (ImGui::Button("Export Wall Mask")) ExportMask(true);
+			}
 			
 			if (generateAllOn)
 			{
@@ -138,6 +171,88 @@ namespace WFCForge
 			auto dat = algorithms[selectedAlgorithm]->At(j, i) ? wallTileData : pathTileData;
 			viewportTexture.UploadData(j * tileSize[0], i * tileSize[1], tileSize[0], tileSize[1], dat);
 		}
+	}
+	
+	void MazeGen2DManager::ExportImage()
+	{
+		auto exportPath = Utils::ShowSaveFileDialog();
+		if (exportPath.size() <= 3) return;
+		if (exportPath.find(".png") == std::string::npos) exportPath += ".png";
+		int countX = tileMapSize[0];
+		int countY = tileMapSize[1];
+		int tileSizeX = tileSize[0];
+		int tileSizeY = tileSize[1];
+		int w = tileSizeX * countX;
+		int h = tileSizeY * countY;
+		unsigned char* d = new unsigned char[w * h * 4];
+		for (int i = 0; i < countY; i++)
+		{
+			for (int j = 0; j < countX; j++)
+			{
+				int tileIndex = i * countY + j;
+				int startX = j * tileSizeX;
+				int startY = i * tileSizeY;
+				for (int a = startY; a < startY + tileSizeY; a++)
+				{
+					for (int b = startX; b < startX + tileSizeX; b++)
+					{
+						int dInd = (a * w + b) * 4;
+						int tInd = ((a - startY) * tileSizeX + (b - startX)) * 4;
+						auto dataPTR = algorithms[selectedAlgorithm]->At(j, i) ? wallTileData : pathTileData;
+						d[dInd + 0] = dataPTR[tInd + 0];
+						d[dInd + 1] = dataPTR[tInd + 1];
+						d[dInd + 2] = dataPTR[tInd + 2];
+						d[dInd + 3] = dataPTR[tInd + 3];
+					}
+				}
+
+			}
+		}
+		stbi_flip_vertically_on_write(false);
+		stbi_write_png(exportPath.data(), w, h, 4, d, w * 4);
+		delete[] d;
+	}
+
+	void MazeGen2DManager::ExportMask(bool value)
+	{
+		auto exportPath = Utils::ShowSaveFileDialog();
+		if (exportPath.size() <= 3) return;
+		if (exportPath.find(".png") == std::string::npos) exportPath += ".png";
+		int countX = tileMapSize[0];
+		int countY = tileMapSize[1];
+		int tileSizeX = tileSize[0];
+		int tileSizeY = tileSize[1];
+		int w = tileSizeX * countX;
+		int h = tileSizeY * countY;
+		unsigned char* d = new unsigned char[w * h * 4];
+		for (int i = 0; i < countY; i++)
+		{
+			for (int j = 0; j < countX; j++)
+			{
+				int tileIndex = i * countY + j;
+				int startX = j * tileSizeX;
+				int startY = i * tileSizeY;
+				for (int a = startY; a < startY + tileSizeY; a++)
+				{
+					for (int b = startX; b < startX + tileSizeX; b++)
+					{
+						int dInd = (a * w + b) * 4;
+						int tInd = ((a - startY) * tileSizeX + (b - startX)) * 4;
+						auto val = algorithms[selectedAlgorithm]->At(j, i) ? 255 : 0;
+						val = value ? val : 255 - val;
+						d[dInd + 0] = val;
+						d[dInd + 1] = val;
+						d[dInd + 2] = val;
+						d[dInd + 3] = val;
+					}
+				}
+
+			}
+		}
+		stbi_flip_vertically_on_write(false);
+		stbi_write_png(exportPath.data(), w, h, 4, d, w * 4);
+		delete[] d;
+
 	}
 
 }

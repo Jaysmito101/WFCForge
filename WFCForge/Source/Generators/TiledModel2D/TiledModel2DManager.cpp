@@ -176,7 +176,11 @@ namespace WFCForge
 			if (ImGui::Button("Export Image"))
 			{
 				auto exportPath = Utils::ShowSaveFileDialog();
-				if (exportPath.size() > 3) tilemap.ExportImage(exportPath);
+				if (exportPath.size() > 3)
+				{
+					if (exportPath.find(".png") == std::string::npos) exportPath += ".png";
+					tilemap.ExportImage(exportPath);
+				}
 			}
 		}
 

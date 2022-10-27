@@ -24,6 +24,8 @@ namespace WFCForge
 
 	private:
 		void UpdateViewportTexture();
+		void ExportImage();
+		void ExportMask(bool value);
 
 	private:
 		int selectedAlgorithm = 0;
