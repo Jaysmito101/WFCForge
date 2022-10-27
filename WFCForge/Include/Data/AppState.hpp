@@ -9,6 +9,8 @@ namespace WFCForge
 	{
 		Mode_TiledModel2D = 0,
 		Mode_OverlappedModel2D,
+		Mode_MazeGen2D,
+		Mode_3D,
 		Mode_Unknown
 	};
 
@@ -48,6 +50,8 @@ namespace WFCForge
 
 		TiledModel2DManager tiledModel2D;
 		OverlappedModel2DManager overlappedModel2D;
+		MazeGen2DManager mazeGen2D;
+
 		Mode mode = Mode_TiledModel2D;
 
 		glm::vec3 temp = glm::vec3(0.0f);

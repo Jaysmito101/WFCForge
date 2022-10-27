@@ -20,6 +20,7 @@
 
 #include "Generators/TiledModel2D/TiledModel2DManager.hpp"
 #include "Generators/OverlappedModel2D/OverlappedModel2DManager.hpp"
+#include "Generators/MazeGen2D/MazeGen2DManager.hpp"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>

@@ -16,7 +16,8 @@ namespace WFCForge
 		switch(appState->mode)
 		{
 			case Mode_OverlappedModel2D : textureID = appState->overlappedModel2D.GetViewportTexture(); break;
-			case Mode_TiledModel2D : textureID = appState->tiledModel2D.GetViewportTexture(); break;
+			case Mode_TiledModel2D: textureID = appState->tiledModel2D.GetViewportTexture(); break;
+			case Mode_MazeGen2D: textureID = appState->mazeGen2D.GetViewportTexture(); break;
 		}
 		if(textureID) ImGui::Image((ImTextureID)textureID, wsize);
 

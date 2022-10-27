@@ -3,7 +3,16 @@
 #include "WFCForge.hpp"
 
 namespace WFCForge
-{	
+{
+
+	static const char* modeNames[] = {
+			"Tiled Model",
+			"Overlapped Model",
+			"Maze Generator",
+			"3D Mode",
+			"Unknown"
+	};
+
 
 	void MainApplication::OnStart()
 	{
@@ -19,6 +28,7 @@ namespace WFCForge
 		appState.mainViewport.SetAppState(&appState);
 		appState.tiledModel2D.Setup(&appState);
 		appState.overlappedModel2D.Setup();
+		appState.mazeGen2D.Setup(&appState);
 
 		WFC_LOG("OnStart");
 	}
@@ -27,52 +37,52 @@ namespace WFCForge
 	void MainApplication::OnUpdate(float deltaTime)
 	{
 		appState.deltaTime = deltaTime;
-		switch(appState.mode)
+		switch (appState.mode)
 		{
-			case Mode_OverlappedModel2D : appState.overlappedModel2D.Update(); break;
-			case Mode_TiledModel2D : appState.tiledModel2D.Update(); break;
+		case Mode_OverlappedModel2D: appState.overlappedModel2D.Update(); break;
+		case Mode_TiledModel2D: appState.tiledModel2D.Update(); break;
+		case Mode_MazeGen2D: appState.mazeGen2D.Update(); break;
 		}
 	}
 
 	void MainApplication::ShowSettingsFor2D()
 	{
-		bool val = false;
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 10.0f));
-		val = (ImGui::BeginTabBar("##textureStoreTabBar"));
-		ImGui::PopStyleVar();
-		if(val)
-		{			
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 10.0f));
-			val = (ImGui::BeginTabItem("Tiled Model"));
-			ImGui::PopStyleVar();
-			if(val)
+		if (ImGui::BeginCombo("2D Generator Mode", modeNames[appState.mode]))
+		{
+			for (int i = 0; i < Mode_3D; i++)
 			{
-				appState.mode = Mode_TiledModel2D;
-				ImGui::PushID("Mode_TiledModel2D");
-				appState.tiledModel2D.ShowSettings();
-				ImGui::PopID();
-				ImGui::EndTabItem();
+				bool isSelected = (appState.mode == i);
+				if (ImGui::Selectable(modeNames[i], isSelected))
+					appState.mode = (Mode)i;
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
 			}
+			ImGui::EndCombo();
+		}
 
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 10.0f));
-			val = (ImGui::BeginTabItem("Overlapped Model"));
-			ImGui::PopStyleVar();
-			if(val)
-			{
-				appState.mode = Mode_OverlappedModel2D;
-				ImGui::PushID("Mode_OverlappedModel2D");
-				appState.overlappedModel2D.ShowSettings();
-				ImGui::PopID();
-				ImGui::EndTabItem();
-			}
-
-			ImGui::EndTabBar();
+		if (appState.mode == Mode_TiledModel2D)
+		{
+			ImGui::PushID("Mode_TiledModel2D");
+			appState.tiledModel2D.ShowSettings();
+			ImGui::PopID();
+		}
+		else if (appState.mode == Mode_OverlappedModel2D)
+		{
+			ImGui::PushID("Mode_OverlappedModel2D");
+			appState.overlappedModel2D.ShowSettings();
+			ImGui::PopID();
+		}
+		else if (appState.mode == Mode_MazeGen2D)
+		{
+			ImGui::PushID("Mode_MazeGen2D");
+			appState.mazeGen2D.ShowSettings();
+			ImGui::PopID();
 		}
 	}
 
 	void MainApplication::ShowSettingsFor3D()
 	{
-		appState.mode = Mode_Unknown;
+		// appState.mode = Mode_Unknown;
 		ImGui::Text("To be implemented in V0.3");
 	}
 
@@ -87,13 +97,13 @@ namespace WFCForge
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 10.0f));
 		val = (ImGui::BeginTabBar("##textureStoreTabBar"));
 		ImGui::PopStyleVar();
-		if(val)
+		if (val)
 		{
-			
+
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 10.0f));
 			val = (ImGui::BeginTabItem("   2D   "));
 			ImGui::PopStyleVar();
-			if(val)
+			if (val)
 			{
 				ShowSettingsFor2D();
 				ImGui::EndTabItem();
@@ -102,7 +112,7 @@ namespace WFCForge
 			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10.0f, 10.0f));
 			val = (ImGui::BeginTabItem("   3D   "));
 			ImGui::PopStyleVar();
-			if(val)
+			if (val)
 			{
 				ShowSettingsFor3D();
 				ImGui::EndTabItem();
@@ -120,6 +130,7 @@ namespace WFCForge
 	{
 		appState.tiledModel2D.Destroy();
 		appState.overlappedModel2D.Destroy();
+		appState.mazeGen2D.Destroy();
 		WFC_LOG("OnEnd");
 	}
 
