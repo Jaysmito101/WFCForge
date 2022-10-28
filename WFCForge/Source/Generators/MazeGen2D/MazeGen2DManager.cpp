@@ -5,6 +5,7 @@
 #include "Generators/MazeGen2D/MazeGen2DDummy.hpp"
 #include "Generators/MazeGen2D/MazeGen2DBinaryTree.hpp"
 #include "Generators/MazeGen2D/MazeGen2DAldousBroder.hpp"
+#include "Generators/MazeGen2D/MazeGen2DKruskal.hpp"
 
 #include <stb_image.h>
 #include <stb_image_write.h>
@@ -39,6 +40,7 @@ namespace WFCForge
 		memset(this->pathTileData, 0, 10 * 10 * 4);
 		this->algorithms.push_back(std::make_shared<MazeGen2DBinaryTree>());
 		this->algorithms.push_back(std::make_shared<MazeGen2DAldousBroder>());
+		this->algorithms.push_back(std::make_shared<MazeGen2DKruskal>());
 		this->algorithms.push_back(std::make_shared<MazeGen2DDummy>());
 	}
 
@@ -84,6 +86,7 @@ namespace WFCForge
 			static const char* algorithmNames[] = {
 				"Binary Tree",
 				"Aldous Broder",
+				"Kruskal",
 				"Dummy"
 			};
 
@@ -110,6 +113,7 @@ namespace WFCForge
 				if (viewportTexture.IsLoaded()) viewportTexture.Destroy();
 				viewportTexture.CreateEmpty(tileMapSize[0] * tileSize[0], tileMapSize[1] * tileSize[1]);
 				algorithms[selectedAlgorithm]->Setup(tileMapSize[0], tileMapSize[1], seed);
+				UpdateViewportTexture();
 			}
 
 		}
