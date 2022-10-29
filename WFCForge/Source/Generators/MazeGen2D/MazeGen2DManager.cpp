@@ -126,6 +126,7 @@ namespace WFCForge
 				if (ImGui::Button("Export Image")) ExportImage();
 				if (ImGui::Button("Export Path Mask")) ExportMask(false);
 				if (ImGui::Button("Export Wall Mask")) ExportMask(true);
+				if (ImGui::Button("Export As Text")) ExportText();
 			}
 			
 			if (generateAllOn)
@@ -417,6 +418,7 @@ namespace WFCForge
 		if (exportPath.find(".png") == std::string::npos) exportPath += ".png";	
 		stbi_flip_vertically_on_write(false);
 		auto [w, h] = viewportTile.GetSize();
+		WFC_LOG("Writing file %s", exportPath.data());
 		stbi_write_png(exportPath.data(), w, h, 4, viewportTile.GetDataPTR(), w * 4);
 	}
 
@@ -457,9 +459,28 @@ namespace WFCForge
 			}
 		}
 		stbi_flip_vertically_on_write(false);
+		WFC_LOG("Writing file %s", exportPath.data());
 		stbi_write_png(exportPath.data(), w, h, 4, d, w * 4);
 		delete[] d;
 
+	}
+
+	void MazeGen2DManager::ExportText()
+	{
+		auto exportPath = Utils::ShowSaveFileDialog();
+		if (exportPath.size() <= 3) return;
+		if (exportPath.find(".txt") == std::string::npos) exportPath += ".txt";
+
+		std::string data;
+		data.reserve(tileMapSize[1] * (tileMapSize[0] + 1) + 1);
+		for (auto i = 0; i < tileMapSize[1]; i++)
+		{
+			for (auto j = 0; j < tileMapSize[0]; j++)
+				data += algorithms[selectedAlgorithm]->At(j, i, true) ? '#' : ' ';
+			data += '\n';
+		}
+		WFC_LOG("Writing file %s", exportPath.data());
+		Utils::WriteFile(exportPath, data);
 	}
 
 }

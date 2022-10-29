@@ -29,6 +29,7 @@ namespace WFCForge
 		void UpdateViewportTexture();
 		void ExportImage();
 		void ExportMask(bool value);
+		void ExportText();
 
 
 	private:

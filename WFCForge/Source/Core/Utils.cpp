@@ -110,7 +110,7 @@ namespace WFCForge
 
 		bool WriteFile(const std::string& path, const std::string& data)
 		{
-			std::fstream file;
+			std::ofstream file;
 			file.open(path);
 			if (file.is_open())
 			{
@@ -123,7 +123,7 @@ namespace WFCForge
 
 		bool AppendFile(const std::string& path, const std::string& data)
 		{
-			std::fstream file;
+			std::ofstream file;
 			file.open(path, std::ios_base::app);
 			if (file.is_open())
 			{
