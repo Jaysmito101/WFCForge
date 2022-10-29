@@ -20,7 +20,8 @@ namespace WFCForge
 		virtual void OnSetup();
 		virtual void OnDestroy();
 
-		inline bool At(int x, int y) { return board[y * width + x]; }
+		bool At(int x, int y, bool wrap = true);
+
 		inline bool IsPrepared() { return this->board != nullptr; }
 		inline bool IsFinished() { return this->finished; }
 

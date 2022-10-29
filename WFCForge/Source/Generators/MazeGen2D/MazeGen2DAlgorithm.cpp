@@ -8,6 +8,19 @@ namespace WFCForge
 	
 	void MazeGen2DAlgorithm::OnDestroy() {}
 
+	bool MazeGen2DAlgorithm::At(int x, int y, bool wrap)
+	{
+		if (wrap)
+		{
+			if (x < 0) x = width - 1;
+			if (x >= width) x = 0;
+			if (y < 0) y = height - 1;
+			if (y >= height) y = 0;
+		}
+		if ((x < 0) || (x >= width) || (y < 0) || (y >= height)) return false;
+		return board[y * width + x];
+	}
+
 	void MazeGen2DAlgorithm::Setup(int w, int h, int s) 
 	{
 		if (this->board != nullptr) this->Destroy();

@@ -23,7 +23,6 @@ namespace WFCForge
 			auto randomNeighbour = unvisitedNeighbours[rand() % unvisitedNeighbours.size()];
 			boardVisits[randomNeighbour.second * width + randomNeighbour.first] = 0;
 			board[(randomNeighbour.second + y) / 2 * width + (randomNeighbour.first + x) / 2] = 0;
-			//board[randomNeighbour.second * width + randomNeighbour.first] = 0;
 			positions.push(randomNeighbour);
 		}
 		else positions.pop();
