@@ -22,6 +22,7 @@ WFCForge is a procedural as well as a custom game art generator! This is based o
 
 ## Screenshots
 
+<img alt = "Screenshot" src="./Images/ss4.gif" width=1000 />
 <img alt = "Screenshot" src="./Images/ss0.png" width=1000 />
 <img alt = "Screenshot" src="./Images/ss1.png" width=1000 />
 <img alt = "Screenshot" src="./Images/ss2.png" width=1000 />

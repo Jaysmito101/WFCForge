@@ -39,7 +39,7 @@ namespace WFCForge
 
 	void MazeGen2DManager::Update()
 	{
-	
+
 	}
 
 	void MazeGen2DManager::ShowSettings()
@@ -154,14 +154,50 @@ namespace WFCForge
 	
 	void MazeGen2DManager::ShowChangeTileSettings()
 	{
+		static char buff[1024];
 		ImGui::BeginChild("##ChangeTileSettings", ImVec2(0, 200));
 		ImGui::Text("Path Tiles : ");
-		ImGui::SameLine();
 		ImGui::Image(pathTiles.first.GetTexID(), ImVec2(50, 50));
+		if (ImGui::BeginPopupContextItem("##PopUpForPAthTileSetting"))
+		{
+			for (auto j = 0; j < pathTiles.second.size(); j++)
+			{
+				ImGui::Image(pathTiles.second[j].GetTexID(), ImVec2(50, 50));
+				sprintf(buff, "##PopUpForPAthTileSettingSub_%d", j);
+				if (ImGui::BeginPopupContextItem(buff))
+				{
+					if(ImGui::Button("Rotate")) pathTiles.second[j].Rotate();
+					if(ImGui::Button("Delete"))
+					{
+						pathTiles.second.erase(pathTiles.second.begin() + j);
+						ImGui::EndPopup();
+						break;
+					}
+					ImGui::EndPopup();
+				}
+
+				if ((j + 1) % 3 != 0) ImGui::SameLine();
+			}
+			ImGui::NewLine();
+			if (ImGui::Button("Add"))
+			{
+				std::string path = Utils::ShowFileOpenDialog();
+				if (path.size() > 3)
+				{
+					int w = 0, h = 0, ch = 4;
+					stbi_set_flip_vertically_on_load(false);
+					auto d = stbi_load(path.data(), &w, &h, &ch, 4);
+					pathTiles.second.emplace_back();
+					pathTiles.second.back().Setup(tileSize[0], tileSize[1]);
+					pathTiles.second.back().SetData(w, h, d);
+					stbi_image_free(d);
+				}
+			}
+			ImGui::EndPopup();
+		}
 		ImGui::NewLine();
 		
 		ImGui::Text("Wall Tiles : ");
-		static char buff[1024];
 		for (auto i = WFC_MG2D_TILE_N; i <= WFC_MG2D_TILE_TW; i++)
 		{
 			ImGui::Image(wallTiles[i].first.GetTexID(), ImVec2(50, 50));
@@ -220,7 +256,7 @@ namespace WFCForge
 		unsigned char* vert = new unsigned char[4 * tileSize[1] * vWidth];
 		memset(hori, 255, 4 * tileSize[0] * hHeight);
 		memset(vert, 255, 4 * tileSize[1] * vWidth);
-	
+
 		// --#--
 		// --#--
 		// --#--
