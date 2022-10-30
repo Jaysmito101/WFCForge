@@ -43,6 +43,8 @@ namespace WFCForge
 		uint32_t Hash(void* data, size_t size);
 		std::string ToHexString(const unsigned char* data, size_t size);
 
+		inline float Random(float min = 0.0f, float max = 1.0f) { return ((float)rand() / RAND_MAX) * (max - min) + min; }
+
 	}
 
 }

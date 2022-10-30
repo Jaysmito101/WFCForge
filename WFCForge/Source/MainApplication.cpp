@@ -10,6 +10,7 @@ namespace WFCForge
 			"Overlapped Model",
 			"Maze Generator",
 			"3D Mode",
+			"Voxel Humans",
 			"Unknown"
 	};
 
@@ -27,8 +28,9 @@ namespace WFCForge
 
 		appState.mainViewport.SetAppState(&appState);
 		appState.tiledModel2D.Setup(&appState);
-		appState.overlappedModel2D.Setup();
 		appState.mazeGen2D.Setup(&appState);
+		appState.voxoMan3D.Setup(&appState);
+		appState.overlappedModel2D.Setup();
 
 		WFC_LOG("OnStart");
 	}
@@ -42,6 +44,7 @@ namespace WFCForge
 		case Mode_OverlappedModel2D: appState.overlappedModel2D.Update(); break;
 		case Mode_TiledModel2D: appState.tiledModel2D.Update(); break;
 		case Mode_MazeGen2D: appState.mazeGen2D.Update(); break;
+		case Mode_VoxoMan3D: appState.voxoMan3D.Update(); break;
 		}
 	}
 
@@ -82,8 +85,25 @@ namespace WFCForge
 
 	void MainApplication::ShowSettingsFor3D()
 	{
-		// appState.mode = Mode_Unknown;
-		ImGui::Text("To be implemented in V0.3");
+		if (ImGui::BeginCombo("3D Generator Mode", modeNames[appState.mode]))
+		{
+			for (auto i = Mode_3D + 1; i < Mode_Unknown; i++)
+			{
+				bool isSelected = (appState.mode == i);
+				if (ImGui::Selectable(modeNames[i], isSelected))
+					appState.mode = (Mode)i;
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		if (appState.mode == Mode_VoxoMan3D)
+		{
+			ImGui::PushID("Mode_VoxoMan3D");
+			appState.voxoMan3D.ShowSettings();
+			ImGui::PopID();
+		}
 	}
 
 	void MainApplication::OnUIShow()
@@ -131,6 +151,7 @@ namespace WFCForge
 		appState.tiledModel2D.Destroy();
 		appState.overlappedModel2D.Destroy();
 		appState.mazeGen2D.Destroy();
+		appState.voxoMan3D.Destroy();
 		WFC_LOG("OnEnd");
 	}
 

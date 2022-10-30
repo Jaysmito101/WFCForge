@@ -15,6 +15,7 @@ namespace WFCForge
 		void* textureID = NULL;
 		switch(appState->mode)
 		{
+			case Mode_VoxoMan3D: textureID = appState->voxoMan3D.GetViewportTexture(); break;
 			case Mode_OverlappedModel2D : textureID = appState->overlappedModel2D.GetViewportTexture(); break;
 			case Mode_TiledModel2D: textureID = appState->tiledModel2D.GetViewportTexture(); break;
 			case Mode_MazeGen2D: textureID = appState->mazeGen2D.GetViewportTexture(); break;
@@ -30,6 +31,7 @@ namespace WFCForge
 			appState->mouseButton.right = io.MouseDown[ImGuiMouseButton_Right];
 
 			float scrollDelta = io.MouseWheel;
+			appState->scrollDelta = io.MouseWheel;
 			if (fabs(scrollDelta) > 0.5f)
 			{
 
@@ -50,6 +52,7 @@ namespace WFCForge
 		}
 		appState->mousePosition.x = this->mousePosition.first;
 		appState->mousePosition.y = this->mousePosition.second;
+		appState->aspectRatio = wsize.x / wsize.y;
 
 		ImGui::EndChild();
 

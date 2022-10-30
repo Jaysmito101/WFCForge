@@ -22,6 +22,7 @@ namespace WFCForge
 		Uniform_uTexture3,
 		Uniform_uTexture4,
 		Uniform_uOffset0,
+		Uniform_uLightPosition,
 		Uniform_Count
 	};
 
@@ -40,7 +41,8 @@ namespace WFCForge
 		"uTexture2",
 		"uTexture3",
 		"uTexture4",
-		"uOffset0"
+		"uOffset0",
+		"uLightPosition"
 	};
 
 	class Shader
