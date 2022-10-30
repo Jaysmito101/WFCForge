@@ -38,7 +38,7 @@ in vec3 Color;
 uniform vec3 uLightPosition;
 uniform vec3 uCameraPosition;
 
-const vec3 lightColor = vec3(0.18f); 
+const vec3 lightColor = vec3(0.2f); 
 
 void main()
 {
@@ -46,7 +46,7 @@ void main()
 
 	vec3 lightDir = normalize(uLightPosition - Position);
 	float diff = max(dot(lightDir, Normal), 0);
-	vec3 diffuse = Color * diff;
+	vec3 diffuse = Color * diff * 2.0f;
 
 	FragColor = vec4(  ambient + diffuse , 1.0f);
 }
@@ -92,6 +92,7 @@ void main()
 	
 	void BatchRenderer::Cube(glm::vec3 start, glm::vec3 size, glm::vec3 color)
 	{
+		start -= size * glm::vec3(-0.5f, -0.5f, -0.5f);
 		this->Vertex(BatchRendererVertex(start + size * glm::vec3(-0.5f, 0.5f, -0.5f),color, glm::vec3(0.0f, 0.0f, 0.0f)));
 		this->Vertex(BatchRendererVertex(start + size * glm::vec3(-0.5f, -0.5f, -0.5f),color, glm::vec3(0.0f, 0.0f, 0.0f)));
 		this->Vertex(BatchRendererVertex(start + size * glm::vec3(0.5f, -0.5f, -0.5f),color, glm::vec3(0.0f, 0.0f, 0.0f)));
@@ -151,6 +152,8 @@ void main()
 	
 	void BatchRenderer::Flush()
 	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
 		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(BatchRendererVertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
 		glm::mat4 mat = glm::translate(glm::mat4(1.0f), this->position);

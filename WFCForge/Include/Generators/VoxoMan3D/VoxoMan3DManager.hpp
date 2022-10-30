@@ -27,6 +27,7 @@ namespace WFCForge
 
 	private:
 		void GenerateNew();
+		void ShowBasicGeneratorSettings();
 
 	private:
 		AppState* appState = nullptr;
@@ -35,6 +36,7 @@ namespace WFCForge
 		Camera cam;
 		glm::vec3 lightPosition = glm::vec3(0.0f, 2.0f, 0.0f);
 		std::vector<VoxoMan3DVoxel> voxels;
+		VoxoMan3DContext context;
 	};
 
 }

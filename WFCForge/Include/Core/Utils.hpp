@@ -20,6 +20,8 @@
 #include <cstdint>
 #include <filesystem>
 
+#include <glm/glm.hpp>
+
 namespace WFCForge
 {
 
@@ -44,6 +46,21 @@ namespace WFCForge
 		std::string ToHexString(const unsigned char* data, size_t size);
 
 		inline float Random(float min = 0.0f, float max = 1.0f) { return ((float)rand() / RAND_MAX) * (max - min) + min; }
+
+		inline glm::vec3 Random(const glm::vec3& preffered, const glm::vec3& lim)
+		{
+			return glm::vec3(
+				preffered.x + Random(-lim.x, lim.x) * 0.5f,
+				preffered.y + Random(-lim.y, lim.y) * 0.5f,
+				preffered.z + Random(-lim.z, lim.z) * 0.5f
+			);
+		}
+
+		template <typename T>
+		inline T Random(const std::vector<T>& vec)
+		{
+			return vec[rand() % vec.size()];
+		}
 
 	}
 
