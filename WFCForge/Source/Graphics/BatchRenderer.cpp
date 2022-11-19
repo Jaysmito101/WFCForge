@@ -22,7 +22,7 @@ void main()
 {
 	gl_Position = uPV * position;
 	Position = position.xyz;
-	Normal =  normal.xyz;
+	Normal =  normalize(normal.xyz);
 	Color = color.xyz;
 }
 )";
