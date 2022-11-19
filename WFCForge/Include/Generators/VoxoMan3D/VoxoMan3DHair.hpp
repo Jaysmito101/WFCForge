@@ -7,6 +7,18 @@ namespace WFCForge
 {
 	class AppState;
 
+    enum HairStyle
+    {
+        HairStyle_Simple1,
+        HairStyle_Simple2,
+        HairStyle_TwoBuns,
+        HairStyle_PonyTail,
+        HairStyle_Rod,
+        HairStyle_Bald,
+        HairStyle_SemiBald,
+        HairStyle_Count
+    };
+
     class VoxoMan3DHair
     {
     public:
@@ -19,6 +31,18 @@ namespace WFCForge
         void Generate(std::vector<VoxoMan3DVoxel>& voxels, VoxoMan3DContext& context);
 
     private:
-        AppState* appState;
+        void GenerateSimple1(std::vector<VoxoMan3DVoxel>& voxels, VoxoMan3DContext& context);
+        void GenerateSimple2(std::vector<VoxoMan3DVoxel>& voxels, VoxoMan3DContext& context);
+        void GenerateTwoBuns(std::vector<VoxoMan3DVoxel>& voxels, VoxoMan3DContext& context);
+        void GeneratePonyTail(std::vector<VoxoMan3DVoxel>& voxels, VoxoMan3DContext& context);
+        void GenerateRod(std::vector<VoxoMan3DVoxel>& voxels, VoxoMan3DContext& context);
+        void GenerateSemiBald(std::vector<VoxoMan3DVoxel>& voxels, VoxoMan3DContext& context);
+
+    private:
+        AppState* appState = nullptr;
+        HairStyle hairStyle = HairStyle_Simple1;
+        bool randomizeHairStyle = true;
+        float lengthMin = 1.5f;
+        float lengthMax = 4.5f;
     };
 }
