@@ -4,6 +4,7 @@
 
 namespace WFCForge
 {
+    
     TiledModel2DTile::TiledModel2DTile(const TiledModel2DTile& other)
     {
         this->width = other.width;
@@ -12,7 +13,7 @@ namespace WFCForge
         this->faceIDHashes = other.faceIDHashes;
         this->faceIDs = faceIDs;
         this->tileHash = other.tileHash;
-        this->allowedTiles = other.allowedTiles;
+        this->allowedTiles = other.allowedTiles;   
     }
 
     TiledModel2DTile::TiledModel2DTile(int tileWidth, int tileHeight)

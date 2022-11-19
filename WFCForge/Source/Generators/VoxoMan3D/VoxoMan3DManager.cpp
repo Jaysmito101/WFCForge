@@ -14,10 +14,12 @@ namespace WFCForge
 		this->cam.GetPositionPTR()[2] = -2.5f;
 		this->cam.GetRotationPTR()[2] = 3.14f;
 		this->cam.GetRotationPTR()[1] = -3.14f;
+		this->hairGen.Setup(appState);
 	}
 	
 	void VoxoMan3DManager::Destroy()
 	{
+		this->hairGen.Destroy();
 		this->fbo.Destroy();
 		this->renderer.Destroy();
 	}
@@ -156,6 +158,13 @@ namespace WFCForge
 				ImGui::PopID();
 			}
 
+			if(ImGui::CollapsingHeader("Hair Generator Settings"))
+			{
+				ImGui::PushID("Hair Generator Settings");
+				this->hairGen.ShowSettings();
+				ImGui::PopID();
+			}
+
 			if (ImGui::Button("Generate")) this->GenerateNew();
 			ImGui::PopID();
 		}
@@ -255,5 +264,8 @@ namespace WFCForge
 			voxels.push_back({ context.torso.breastRightStart, context.torso.breastSize, context.skinColor });
 
 		}
+
+		// add the hair
+		this->hairGen.Generate(voxels, context);
 	}
 }

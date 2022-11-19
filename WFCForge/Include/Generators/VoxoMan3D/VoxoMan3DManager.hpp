@@ -5,6 +5,7 @@
 #include "Graphics/Camera.hpp"
 
 #include "Generators/VoxoMan3D/VoxoMan3DTypes.hpp"
+#include "Generators/VoxoMan3D/VoxoMan3DHair.hpp"
 
 #include "imgui.h"
 
@@ -37,6 +38,7 @@ namespace WFCForge
 		glm::vec3 lightPosition = glm::vec3(0.0f, 2.0f, 0.0f);
 		std::vector<VoxoMan3DVoxel> voxels;
 		VoxoMan3DContext context;
+		VoxoMan3DHair hairGen;
 	};
 
 }
