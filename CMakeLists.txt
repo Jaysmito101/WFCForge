@@ -14,8 +14,8 @@ find_package( OpenGL REQUIRED )
 
 include_directories( 
     ./WFCForge/Include
-    ./Vendor/Glad/Include
-    ./Vendor/GLFW/Include
+    ./Vendor/Glad/include
+    ./Vendor/GLFW/include
     ./Vendor/GLM
     ./Vendor/Avir
     ./Vendor/JSON/single_include
