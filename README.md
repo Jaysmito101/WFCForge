@@ -18,7 +18,7 @@
 
 WFCForge is a procedural as well as a custom game art generator! This is based on [Wave Function Collapse](https://github.com/mxgmn/WaveFunctionCollapse).
 
-## Tutorial : https://youtu.be/SFqquYiNGzg
+## Tutorial : <https://youtu.be/SFqquYiNGzg>
 
 ## Screenshots
 
@@ -35,8 +35,33 @@ WFCForge is a procedural as well as a custom game art generator! This is based o
 <img alt = "Output" src="./Images/rs0.png" width=1000 />
 <img alt = "Output" src="./Images/rs2.png" width=1000 />
 
-## Download: https://github.com/Jaysmito101/WFCForge/releases/download/v0.1/WFCForge.Win64.zip
-
-
+## Download: <https://github.com/Jaysmito101/WFCForge/releases/download/v0.1/WFCForge.Win64.zip>
 
 ![Views](https://dynamic-badges.maxalpha.repl.co/views?id=Jaysmito101.WFCForge&style=for-the-badge&color=blue)
+
+## Building from source
+
+### Linux
+
+1. Install dependencies
+   - Build chain: cmake, gcc (should be 13 to support C++20 format header)
+   - Project deps: opengl (libgl1-mesa-dev)
+   - GLFW deps: libxrandr-dev, libxinerama-dev, libxcursor-dev, libxi-dev
+2. Run the [Helper.py](Helper.py) script as listed in the help output:
+   1. Initialize & update the submodules:
+
+      ```bash
+      python Helper.py initsm && python Helper.py updatesm
+      ```
+
+   2. Generate the cmake files:
+
+      ```bash
+      python Helper.py generate
+      ```
+
+   3. Build the project:
+
+      ```bash
+      python Helper.py build
+      ```
